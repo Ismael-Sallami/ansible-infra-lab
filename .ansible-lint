@@ -1,0 +1,28 @@
+---
+# The playbooks are a delivered coursework artifact. Rewriting them to please a
+# style checker would misrepresent what was handed in, so the rules they break
+# are skipped here and named in "Known limitations" in the README instead.
+#
+# Nothing is skipped silently: every entry below says what the code does wrong.
+
+profile: basic
+
+skip_list:
+  # --- cosmetic ---
+  # Short module names (user, service, copy) instead of ansible.builtin.user.
+  - fqcn
+  # `yes` instead of `true`. Both are valid YAML booleans.
+  - yaml[truthy]
+  # Trailing blank line at the end of a file.
+  - yaml[empty-lines]
+
+  # --- real defects, documented in the README ---
+  # configurar_web.yml stops the other web server with ignore_errors instead of
+  # a failed_when condition, so it would also swallow an unrelated failure.
+  - ignore-errors
+  # The two `copy` tasks that write index.html do not set a mode, so the file
+  # lands with whatever umask the remote has.
+  - risky-file-permissions
+  # One task name puts "{{ web_service }}" in the middle instead of at the end,
+  # which makes the log line harder to group.
+  - name[template]

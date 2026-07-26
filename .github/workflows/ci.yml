@@ -1,0 +1,57 @@
+# Checks every push, so the README badge means something.
+#
+# The playbooks target machines that no longer exist, so nothing is run against
+# a host. What is checked: both playbooks parse, ansible-lint is happy, the
+# Compose file is valid and the shell scripts pass shellcheck.
+#
+# @author Ismael Sallami Moreno
+
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ansible:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Ansible
+        run: pip install 'ansible-core~=2.16' ansible-lint
+
+      # authorized_key and firewalld live in ansible.posix, not in core.
+      - name: Install the required collections
+        run: ansible-galaxy collection install -r requirements.yml
+
+      - name: Syntax check both playbooks
+        run: make syntax
+
+      - name: Lint
+        run: make lint
+
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate the monitoring stack
+        run: make compose
+
+  shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Check the scripts
+        run: make shell

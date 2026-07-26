@@ -1,0 +1,8 @@
+---
+# Collections the playbooks need. authorized_key and firewalld are not in
+# ansible-core, they live in ansible.posix.
+#
+# Install with: ansible-galaxy collection install -r requirements.yml
+collections:
+  - name: ansible.posix
+    version: ">=1.5.0"
