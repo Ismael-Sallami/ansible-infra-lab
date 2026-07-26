@@ -1,21 +1,9 @@
----
-# Variables for playbook.yml.
-#
-# RECONSTRUCTED. The delivered file was overwritten with unrelated notes before
-# the project was ever committed, so the original values are gone. These are
-# derived from how playbook.yml and tasks/crear_usuario.yml use them, with
-# placeholder keys. See "Known limitations" in the README.
-
-# Account that gets passwordless sudo and key-based SSH.
 admin_user: admin
+ssh_pub_key_admin: "{{ lookup('file', 'claves/id_rsa_admin.pub') }}"
 
-# Public key installed for admin_user. Generate it with scripts/generate-keys.sh
-# and paste the contents of keys/id_admin.pub here.
-ssh_pub_key_admin: "ssh-ed25519 AAAA... admin@lab"
-
-# Extra accounts. Each one is created, added to wheel and given its own key.
 usuarios_extra:
   - nombre: juan
-    llave: "ssh-ed25519 AAAA... juan@lab"
+    llave: "{{ lookup('file', 'claves/id_rsa_juan.pub') }}"
   - nombre: maria
-    llave: "ssh-ed25519 AAAA... maria@lab"
+    llave: "{{ lookup('file', 'claves/id_rsa_maria.pub') }}"
+

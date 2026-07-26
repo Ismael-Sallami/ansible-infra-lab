@@ -60,8 +60,15 @@ was never installed. It is defensive, and it is what makes the playbook safe to 
 dirty machine.
 
 **Keys are generated, never stored.** `scripts/generate-keys.sh` creates the three lab
-keypairs and `keys/` is in `.gitignore`. This is a deliberate correction: an earlier version
-of this project had twelve private keys committed to a public repository.
+keypairs into `claves/`, which is in `.gitignore`. The playbook never embeds a key: it reads
+the public half at run time.
+
+```yaml
+ssh_pub_key_admin: "{{ lookup('file', 'claves/id_rsa_admin.pub') }}"
+```
+
+That one line is why the repository can be public. An earlier version of this project had
+twelve private keys committed.
 
 ## Layout
 
@@ -71,9 +78,14 @@ src/ansible/webservers/   part 2: Apache and Nginx from one playbook
 src/monitoring/           part 3: Prometheus and Grafana on Docker Compose
 src/load-testing/         part 4: JMeter plan, input data and a saved run
 scripts/generate-keys.sh  creates the lab SSH keys
-docs/report/              write-up for part 1 and a screenshot of the JMeter run
+docs/report/              the written reports, in order, and a JMeter screenshot
+docs/variants/            the earlier iteration of the webserver playbook
+docs/latex/               the lab write-up these were produced alongside
 requirements.yml          Ansible collections the playbooks need
 ```
+
+`docs/report/` is the analysis as it was written: the first report on provisioning, how the
+playbook works, the working notes, and the explanation of the second version.
 
 ## Requirements
 
@@ -156,11 +168,6 @@ the plan running in the JMeter GUI.
 
 ### Known limitations
 
-- **`src/ansible/users/group_vars/all.yml` is reconstructed.** The delivered file was
-  overwritten with unrelated study notes before the project was first committed, so the
-  original values are gone. The current file is derived from how the playbook uses those
-  variables, with placeholder keys. It parses and the playbook syntax-checks, but the values
-  are not the ones that ran in the lab.
 - **The API under load is not included.** It is a Node and MongoDB service supplied by the
   course, whose own README states its development is outside the scope of the subject. It is
   not mine to republish, and it ships with hardcoded credentials. The JMeter plan targets
@@ -175,7 +182,12 @@ the plan running in the JMeter GUI.
          -l run.jtl
   ```
 
-  This is the only change made to the delivered files apart from the reconstructed vars.
+  This is the only change made to any delivered file.
+
+- **`group_vars/all.yml` came from the exercise folder, not the submission.** The copy
+  inside the graded deliverable had been overwritten with unrelated study notes at some
+  point before the project was first committed. The working original survived under
+  `Resolucion/Capitulos/Ficheros_Ejercicios/`, and that is the one here.
 - **The assignment briefs are not included** either, for the same reason. "The problem"
   above describes what they asked for.
 - **`src/ansible/webservers/inventory/hosts.ini` still points at `claves/id_rsa_admin`**, a
