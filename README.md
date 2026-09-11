@@ -144,7 +144,7 @@ test — it is a debugging run captured while the plan was still being built:
 | Samples | 26, over roughly one second |
 | Successful | 10 of 26 (38 %) |
 | Median / p95 | 5 ms / 66 ms |
-| Failures | `Expediente Académico` returned 500 (×10), `Login Administrador` returned 401 (×3) |
+| Failures | the student record lookup returned 500 (×10), the admin login returned 401 (×3) |
 
 Student login worked; the record lookup and the admin login did not. The final run was never
 saved to the repository, so this is what there is. `docs/report/jmeter-load-test.png` shows
